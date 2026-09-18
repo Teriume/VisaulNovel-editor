@@ -18,9 +18,7 @@ class Scene {
         
         struct TextObject {
             std::string content;
-            sf::Vector2f pos{0.f,0.f};
-            unsigned int size = 24;
-            sf::Color color = sf::Color::White;
+            sf::Text drawable;
         };
         
         const char* GetMusicPath() const {
@@ -68,6 +66,7 @@ class Scene {
         sf::Music m_music;
         bool m_hasMusic = false;
         std::vector<TextObject> m_texts;
+        std::shared_ptr<sf::Font> m_font;
 
     public:
         Scene() = default;
