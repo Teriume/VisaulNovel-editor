@@ -122,11 +122,6 @@ void DrawInspectorPanel(SceneManager& sceneManager, CharacterPresetManager& pres
         ImGui::BeginChild("ScenePreviewChild", previewSize, true, ImGuiChildFlags_AlwaysUseWindowPadding);
         ImGui::Image(preview.GetTexture(), sf::Vector2f(previewSize.x, previewSize.y));
 
-        // Allow adding text objects in edit mode
-        if (ImGui::Button("Добавить текст", ImVec2(-1, 0))) {
-            currentScene->AddText("Новый текст", sf::Vector2f(50.f, 50.f), 24);
-        }
-
         bool previewHovered = ImGui::IsItemHovered();
         if (previewHovered) {
             ImGui::Text("ЛКМ: передвинуть %s", editTarget == 1 ? "персонажа" : "фон");
@@ -145,21 +140,6 @@ void DrawInspectorPanel(SceneManager& sceneManager, CharacterPresetManager& pres
                     currentScene->SetBackgroundPosition(currentScene->GetBackgroundPosition() + delta);
                 }
                 ImGui::ResetMouseDragDelta(ImGuiMouseButton_Left);
-            }
-        }
-
-        // Click to select text: simple check by bounding box
-        if (previewHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-            ImVec2 mousePos = ImGui::GetMousePos();
-            ImVec2 childPos = ImGui::GetItemRectMin();
-            ImVec2 localPos(mousePos.x - childPos.x, mousePos.y - childPos.y);
-            // map to scene coordinates assuming 1:1 for now
-            for (int i = 0; i < static_cast<int>(currentScene->GetTexts().size()); ++i) {
-                const auto& t = currentScene->GetTexts()[i];
-                sf::FloatRect rect(t.drawable.getPosition(), sf::Vector2f(t.drawable.getLocalBounds().width, t.drawable.getLocalBounds().height));
-                if (rect.contains(localPos.x, localPos.y)) {
-                    sceneManager.SelectText(i);
-                }
             }
         }
 

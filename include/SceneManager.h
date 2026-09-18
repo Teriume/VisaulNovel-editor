@@ -18,8 +18,6 @@ public:
 
     int GetSelectedCharacterIndex() const;
     void SelectCharacter(int index);
-    int GetSelectedTextIndex() const;
-    void SelectText(int index);
 
     const std::vector<Scene>& GetScenes() const;
     size_t GetSceneCount() const;
@@ -28,6 +26,4 @@ private:
     std::vector<Scene> m_scenes;
     int m_selectedSceneIndex = -1;
     int m_selectedCharacterIndex = -1;
-    int m_selectedTextIndex = -1;
 };
-

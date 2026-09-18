@@ -16,11 +16,6 @@ class Scene {
             std::unique_ptr<sf::Sprite> sprite;
         };
         
-        struct TextObject {
-            std::string content;
-            sf::Text drawable;
-        };
-        
         const char* GetMusicPath() const {
             return m_musicPath.c_str();
         }
@@ -65,8 +60,6 @@ class Scene {
         std::vector<Character> m_characters;
         sf::Music m_music;
         bool m_hasMusic = false;
-        std::vector<TextObject> m_texts;
-        std::shared_ptr<sf::Font> m_font;
 
     public:
         Scene() = default;
@@ -96,10 +89,6 @@ class Scene {
         }
 
         void SetName(const char* name);
-
-        bool AddText(const char* text, const sf::Vector2f& pos, unsigned int size = 24);
-
-        const std::vector<struct TextObject>& GetTexts() const { return m_texts; }
 
         std::string m_musicPath = ""; // Путь к музыке сцены (может быть пустым, если музыка не задана)
         float m_musicVolume = 100.f; // Громкость музыки сцены (0-100)

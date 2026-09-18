@@ -66,20 +66,6 @@ void SceneManager::SelectCharacter(int index) {
     m_selectedCharacterIndex = -1;
 }
 
-int SceneManager::GetSelectedTextIndex() const {
-    return m_selectedTextIndex;
-}
-
-void SceneManager::SelectText(int index) {
-    if (Scene* scene = GetSelectedScene()) {
-        if (index >= 0 && index < static_cast<int>(scene->GetTexts().size())) {
-            m_selectedTextIndex = index;
-            return;
-        }
-    }
-    m_selectedTextIndex = -1;
-}
-
 const std::vector<Scene>& SceneManager::GetScenes() const {
     return m_scenes;
 }
