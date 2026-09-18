@@ -7,11 +7,7 @@
 Scene::Scene(const char* name) {
     std::strncpy(m_name, name, sizeof(m_name) - 1);
     m_name[sizeof(m_name) - 1] = '\0';
-    if (!m_font) {
-        m_font = std::make_shared<sf::Font>();
-        // try loading a default system font; ignore failure
-        m_font->loadFromFile("/System/Library/Fonts/Supplemental/Arial.ttf");
-    }
+    // nothing font-related here; rendering of texts is handled by the editor UI
 }
 
 void Scene::SetName(const char* name) {
@@ -82,15 +78,9 @@ bool Scene::AddCharacter(const char* path, const char* name, const char* emotion
 bool Scene::AddText(const char* text, const sf::Vector2f& pos, unsigned int size) {
     TextObject t;
     t.content = text;
-    if (!m_font) {
-        m_font = std::make_shared<sf::Font>();
-        m_font->loadFromFile("/System/Library/Fonts/Supplemental/Arial.ttf");
-    }
-    t.drawable.setFont(*m_font);
-    t.drawable.setString(t.content);
-    t.drawable.setCharacterSize(size);
-    t.drawable.setFillColor(sf::Color::White);
-    t.drawable.setPosition(pos);
+    t.pos = pos;
+    t.size = size;
+    t.color = sf::Color::White;
     m_texts.push_back(std::move(t));
     return true;
 }
@@ -139,6 +129,5 @@ void Scene::Render(sf::RenderTarget& target) const {
         if (character.sprite)
             target.draw(*character.sprite);
 
-    for (const auto& text : m_texts)
-        target.draw(text.drawable);
+    // Text objects are rendered in the editor UI to ensure proper font availability
 }

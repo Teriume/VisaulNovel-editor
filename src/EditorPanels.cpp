@@ -148,16 +148,16 @@ void DrawInspectorPanel(SceneManager& sceneManager, CharacterPresetManager& pres
             }
         }
 
-        // Click to select text: simple check by bounding box
+        // Click to select text: check by simple bbox using stored pos and size
         if (previewHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
             ImVec2 mousePos = ImGui::GetMousePos();
             ImVec2 childPos = ImGui::GetItemRectMin();
             ImVec2 localPos(mousePos.x - childPos.x, mousePos.y - childPos.y);
-            // map to scene coordinates assuming 1:1 for now
             for (int i = 0; i < static_cast<int>(currentScene->GetTexts().size()); ++i) {
                 const auto& t = currentScene->GetTexts()[i];
-                sf::FloatRect rect(t.drawable.getPosition(), sf::Vector2f(t.drawable.getLocalBounds().width, t.drawable.getLocalBounds().height));
-                if (rect.contains(localPos.x, localPos.y)) {
+                float w = t.content.size() * (t.size * 0.5f);
+                float h = t.size * 1.2f;
+                if (localPos.x >= t.pos.x && localPos.x <= t.pos.x + w && localPos.y >= t.pos.y && localPos.y <= t.pos.y + h) {
                     sceneManager.SelectText(i);
                 }
             }
