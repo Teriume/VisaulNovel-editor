@@ -25,6 +25,7 @@ set(IMGUI_SOURCES
 
 # Команда GLOB автоматически находит все файлы с расширением .cpp в папке src
 file(GLOB PROJECT_SOURCES "src/*.cpp")
+list(REMOVE_ITEM PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/PlayerMain.cpp")
 set(TINYFILEDIALOGS_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/external/libtinyfiledialogs/tinyfiledialogs.c")
 
 # 3. Создание исполняемого файла (теперь используем переменную PROJECT_SOURCES)
@@ -53,4 +54,22 @@ target_link_libraries(${PROJECT_NAME}
     SFML::System
     SFML::Audio
     OpenGL::GL
+)
+
+add_executable(VisualNovelPlayer
+    src/PlayerMain.cpp
+    src/Scene.cpp
+    src/SceneManager.cpp
+)
+
+target_include_directories(VisualNovelPlayer PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(VisualNovelPlayer
+    PRIVATE
+    SFML::Graphics
+    SFML::Window
+    SFML::System
+    SFML::Audio
 )

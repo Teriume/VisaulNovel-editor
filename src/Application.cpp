@@ -40,5 +40,6 @@ int Application::Run() {
         Update(m_clock.restart());
         Render();
     }
+    m_editor.Shutdown();
     return 0;
 }

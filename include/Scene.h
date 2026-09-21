@@ -10,10 +10,17 @@ class Scene {
     public:
         struct Character {
             std::string name;
-            std::string emotion = "Нормальное";
+            std::string emotion;
             std::string notes;
-            sf::Texture texture;
+            std::string imagePath; // <-- ДОБАВЬТЕ ЭТУ СТРОКУ
+
+            std::shared_ptr<sf::Texture> texture;
             std::unique_ptr<sf::Sprite> sprite;
+        };
+
+        struct Choice {
+            std::string text;
+            std::string targetScene;
         };
         
         const char* GetMusicPath() const {
@@ -60,6 +67,9 @@ class Scene {
         std::vector<Character> m_characters;
         sf::Music m_music;
         bool m_hasMusic = false;
+        std::string m_speakerName;
+        std::string m_dialogueText;
+        std::vector<Choice> m_choices;
 
     public:
         Scene() = default;
@@ -71,6 +81,7 @@ class Scene {
         const std::string& GetBackgroundPath() const;
         void SetBackgroundScale(const sf::Vector2f& scale);
         void SetBackgroundPosition(const sf::Vector2f& position);
+        void CenterBackground(float sceneWidth = 1280.0f, float sceneHeight = 720.0f);
         sf::Vector2f GetBackgroundScale() const;
         sf::Vector2f GetBackgroundPosition() const;
 
@@ -81,6 +92,14 @@ class Scene {
         size_t GetCharacterCount() const;
         Character* GetCharacter(size_t index);
         const std::vector<Character>& GetCharacters() const;
+        std::vector<Choice>& GetChoices();
+        const std::vector<Choice>& GetChoices() const;
+        void AddChoice(const std::string& text = "Новый вариант", const std::string& targetScene = "");
+        void RemoveChoice(size_t index);
+        const std::string& GetSpeakerName() const;
+        const std::string& GetDialogueText() const;
+        void SetSpeakerName(const std::string& name);
+        void SetDialogueText(const std::string& text);
 
         void Render(sf::RenderTarget& target) const;
 

@@ -16,6 +16,7 @@ bool ScenePreview::RenderScene(Scene& scene, const sf::Vector2u& size) {
         return false;
 
     m_sceneRenderTexture.clear(sf::Color(40, 40, 40));
+    m_sceneRenderTexture.setView(sf::View(sf::Vector2f(640.0f, 360.0f), sf::Vector2f(1280.0f, 720.0f)));
     scene.Render(m_sceneRenderTexture);
     m_sceneRenderTexture.display();
     return true;
@@ -23,4 +24,8 @@ bool ScenePreview::RenderScene(Scene& scene, const sf::Vector2u& size) {
 
 const sf::Texture& ScenePreview::GetTexture() const {
     return m_sceneRenderTexture.getTexture();
+}
+
+const sf::RenderTexture& ScenePreview::GetRenderTexture() const {
+    return m_sceneRenderTexture;
 }

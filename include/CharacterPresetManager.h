@@ -2,14 +2,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <SFML/Graphics.hpp>
 
 struct CharacterPreset {
     std::string name;
-    std::string emotion = "Нормальное";
     std::string notes;
-    std::string imagePath;
-    std::unique_ptr<sf::Texture> previewTexture;
+    std::string defaultEmotion = "Нормальное";
+    
+    std::unordered_map<std::string, std::string> emotions;
+    
+    // Заменили unique_ptr на shared_ptr, чтобы vector не поршил память при реаллокации
+    std::shared_ptr<sf::Texture> previewTexture;
 };
 
 class CharacterPresetManager {
@@ -17,10 +21,10 @@ public:
     CharacterPresetManager() = default;
 
     bool AddPreset(const std::string& name,
-                   const std::string& emotion,
+                   const std::unordered_map<std::string, std::string>& emotions,
+                   const std::string& defaultEmotion,
                    const std::string& notes,
-                   const std::string& imagePath,
-                   std::unique_ptr<sf::Texture> previewTexture);
+                   std::shared_ptr<sf::Texture> previewTexture);
 
     CharacterPreset* GetSelectedPreset();
     const CharacterPreset* GetSelectedPreset() const;
@@ -28,6 +32,10 @@ public:
     void SelectPreset(int index);
     bool HasPresets() const;
     const std::vector<CharacterPreset>& GetPresets() const;
+    
+    bool SaveToFile(const std::string& path) const;
+    bool LoadFromFile(const std::string& path);   // Очищает и загружает заново
+    bool ImportFromFile(const std::string& path); // Добавляет/объединяет пресеты
 
 private:
     std::vector<CharacterPreset> m_presets;

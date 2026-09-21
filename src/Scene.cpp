@@ -46,6 +46,16 @@ void Scene::SetBackgroundPosition(const sf::Vector2f& position) {
         m_backgroundSprite->setPosition(position);
 }
 
+void Scene::CenterBackground(float sceneWidth, float sceneHeight) {
+    if (!m_hasBackground || !m_backgroundSprite)
+        return;
+    const sf::FloatRect bounds = m_backgroundSprite->getLocalBounds();
+    m_backgroundSprite->setPosition({
+        (sceneWidth - bounds.size.x * m_backgroundSprite->getScale().x) * 0.5f,
+        (sceneHeight - bounds.size.y * m_backgroundSprite->getScale().y) * 0.5f
+    });
+}
+
 sf::Vector2f Scene::GetBackgroundScale() const {
     return m_backgroundSprite ? m_backgroundSprite->getScale() : sf::Vector2f(1.f, 1.f);
 }
@@ -54,21 +64,24 @@ sf::Vector2f Scene::GetBackgroundPosition() const {
     return m_backgroundSprite ? m_backgroundSprite->getPosition() : sf::Vector2f(0.f, 0.f);
 }
 
-bool Scene::AddCharacter(const char* path, const char* name, const char* emotion, const char* notes) {
-    m_characters.emplace_back();
-    Character& character = m_characters.back();
-
-    if (!character.texture.loadFromFile(path)) {
-        m_characters.pop_back();
+bool Scene::AddCharacter(const char* imagePath, const char* name, const char* emotion, const char* notes) {
+    auto newTexture = std::make_shared<sf::Texture>();
+    if (!imagePath || !newTexture->loadFromFile(imagePath)) {
         return false;
     }
 
+    Character character;
     character.name = name ? name : "Персонаж";
     character.emotion = emotion ? emotion : "Нормальное";
     character.notes = notes ? notes : "";
-    character.sprite = std::make_unique<sf::Sprite>(character.texture);
+    //character.imagePath = imagePath ? imagePath : "";
+    character.texture = newTexture;
+    character.sprite = std::make_unique<sf::Sprite>(*character.texture);
     character.sprite->setPosition(sf::Vector2f(100.f, 100.f));
     character.sprite->setScale(sf::Vector2f(1.f, 1.f));
+
+    // Используйте имя вектора персонажей из вашего Scene.h (m_characters или characters)
+    m_characters.push_back(std::move(character));
     return true;
 }
 
@@ -106,6 +119,39 @@ Scene::Character* Scene::GetCharacter(size_t index) {
 
 const std::vector<Scene::Character>& Scene::GetCharacters() const {
     return m_characters;
+}
+
+std::vector<Scene::Choice>& Scene::GetChoices() {
+    return m_choices;
+}
+
+const std::vector<Scene::Choice>& Scene::GetChoices() const {
+    return m_choices;
+}
+
+void Scene::AddChoice(const std::string& text, const std::string& targetScene) {
+    m_choices.push_back({text, targetScene});
+}
+
+void Scene::RemoveChoice(size_t index) {
+    if (index < m_choices.size())
+        m_choices.erase(m_choices.begin() + static_cast<std::ptrdiff_t>(index));
+}
+
+const std::string& Scene::GetSpeakerName() const {
+    return m_speakerName;
+}
+
+const std::string& Scene::GetDialogueText() const {
+    return m_dialogueText;
+}
+
+void Scene::SetSpeakerName(const std::string& name) {
+    m_speakerName = name;
+}
+
+void Scene::SetDialogueText(const std::string& text) {
+    m_dialogueText = text;
 }
 
 void Scene::Render(sf::RenderTarget& target) const {
